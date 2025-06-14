@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom styles -->
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --primary-color: rgba(114, 137, 254, 0.9);
+            --secondary-color: rgba(80, 110, 228, 0.9);
+            --success-color: rgba(36, 204, 146, 0.9);
+            --info-color: rgba(70, 194, 255, 0.9);
+            --warning-color: rgba(255, 193, 61, 0.9);
+            --danger-color: rgba(255, 99, 99, 0.9);
+            --dark-bg: #0c0f18;
+            --darker-bg: #070a12;
+            --card-bg: rgba(20, 25, 39, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --glow-primary: 0 0 15px rgba(114, 137, 254, 0.4);
+            --blur-effect: blur(12px);
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 25% 15%, rgba(114, 137, 254, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 75% 85%, rgba(70, 194, 255, 0.1) 0%, transparent 25%);
+            color: var(--text-primary);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Neue Sidebar-Styles */
+        .sidebar-compact {
+            width: 4rem;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            background: rgba(20, 25, 39, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 5px 0 10px rgba(0,0,0,0.12);
+        }
+        .sidebar-compact .icon-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            margin: 0.5rem auto;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            transition: background 0.2s, color 0.2s;
+            position: relative;
+        }
+        .sidebar-compact .icon-btn.active,
+        .sidebar-compact .icon-btn:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #fff !important;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+        .sidebar-compact .icon-btn svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        .sidebar-compact .icon-btn .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            left: 110%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(30,35,50,0.95);
+            color: #fff !important;
+            padding: 0.25rem 0.7rem;
+            border-radius: 0.4rem;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 999;
+        }
+        .sidebar-compact .icon-btn:hover .tooltip,
+        .sidebar-compact .icon-btn:focus .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .sidebar-compact .logo {
+            margin: 1.2rem auto 0.5rem auto;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.08);
+            border-radius: 0.75rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color) !important;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 8px rgba(114,137,254,0.08);
+        }
+        .sidebar-compact .sidebar-bottom {
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: var(--header-height);
+            background: rgba(15, 20, 30, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-right: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            z-index: 100;
+            transition: all 0.3s;
+            box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar .nav-link {
+            color: var(--text-secondary);
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 0.25rem 0.7rem;
+            border-radius: 10px;
+        }
+        
+        .sidebar .nav-link:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateX(3px);
+        }
+        
+        .sidebar .nav-link.active {
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: var(--glow-primary);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 0.75rem;
+            width: 1.25rem;
+            text-align: center;
+        }
+        
+        .header {
+            height: var(--header-height);
+            background-color: rgba(15, 20, 30, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 101;
+            padding: 0 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header .dropdown-menu {
+            background: rgba(22, 28, 45, 0.85);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header .dropdown-item {
+            color: var(--text-secondary);
+        }
+        
+        .header .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        
+        .main-content {
+            margin-left: 4rem;
+            padding-top: calc(var(--header-height) + 1.5rem);
+            min-height: 100vh;
+            padding-right: 1.5rem;
+            padding-left: 1.5rem;
+            padding-bottom: 1.5rem;
+            transition: margin-left 0.3s;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 1.2rem;
+        }
+        
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary-color), transparent);
+        }
+        
+        .stat-card.primary:before { background: linear-gradient(to bottom, var(--primary-color), transparent); }
+        .stat-card.success:before { background: linear-gradient(to bottom, var(--success-color), transparent); }
+        .stat-card.info:before { background: linear-gradient(to bottom, var(--info-color), transparent); }
+        .stat-card.warning:before { background: linear-gradient(to bottom, var(--warning-color), transparent); }
+        
+        .stat-card .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+            background: linear-gradient(135deg, var(--primary-color), transparent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card.primary .stat-icon { background: linear-gradient(135deg, var(--primary-color), rgba(114, 137, 254, 0.3)); -webkit-background-clip: text; }
+        .stat-card.success .stat-icon { background: linear-gradient(135deg, var(--success-color), rgba(36, 204, 146, 0.3)); -webkit-background-clip: text; }
+        .stat-card.info .stat-icon { background: linear-gradient(135deg, var(--info-color), rgba(70, 194, 255, 0.3)); -webkit-background-clip: text; }
+        .stat-card.warning .stat-icon { background: linear-gradient(135deg, var(--warning-color), rgba(255, 193, 61, 0.3)); -webkit-background-clip: text; }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            position: relative;
+            box-shadow: 0 0 5px currentColor;
+        }
+        
+        .status-indicator:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.4;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator.online { background-color: var(--success-color); }
+        .status-indicator.offline { background-color: var(--danger-color); }
+        .status-indicator.busy { background-color: var(--warning-color); }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            70% { transform: scale(1.5); opacity: 0; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .activity-item {
+            padding: 0.85rem 1.2rem;
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.2s;
+        }
+        
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+        }
+        
+        .btn {
+            border-radius: 10px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: transparent;
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            box-shadow: 0 0 15px rgba(114, 137, 254, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(114, 137, 254, 0.1);
+        }
+        
+        .btn-outline-primary:hover {
+            background: rgba(114, 137, 254, 0.2);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), rgba(36, 204, 146, 0.7));
+            border-color: transparent;
+        }
+        
+        .btn-success:hover, .btn-success:focus {
+            background: linear-gradient(135deg, rgba(36, 204, 146, 0.7), var(--success-color));
+            box-shadow: 0 0 15px rgba(36, 204, 146, 0.5);
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, var(--info-color), rgba(70, 194, 255, 0.7));
+            border-color: transparent;
+        }
+        
+        .btn-info:hover, .btn-info:focus {
+            background: linear-gradient(135deg, rgba(70, 194, 255, 0.7), var(--info-color));
+            box-shadow: 0 0 15px rgba(70, 194, 255, 0.5);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), rgba(255, 193, 61, 0.7));
+            border-color: transparent;
+        }
+        
+        .btn-warning:hover, .btn-warning:focus {
+            background: linear-gradient(135deg, rgba(255, 193, 61, 0.7), var(--warning-color));
+            box-shadow: 0 0 15px rgba(255, 193, 61, 0.5);
+        }
+        
+        .progress {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            border-radius: 10px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3));
+        }
+        
+        .bg-primary { background: var(--primary-color) !important; }
+        .bg-success { background: var(--success-color) !important; }
+        .bg-info { background: var(--info-color) !important; }
+        .bg-warning { background: var(--warning-color) !important; }
+        .bg-danger { background: var(--danger-color) !important; }
+        
+        .text-muted {
+            color: var(--text-secondary) !important;
+        }
+        
+        .list-group-item {
+            background-color: transparent;
+            border-color: var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.8rem 1.2rem;
+            transition: all 0.2s;
+        }
+        
+        .list-group-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Animation for liquid effect */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Glow effect on hover for cards */
+        .card:hover:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(114, 137, 254, 0.3);
+            opacity: 0;
+            z-index: -1;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(114, 137, 254, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(114, 137, 254, 0.7);
+        }
+        
+        /* Dark theme for charts */
+        .chart-theme-dark {
+            color: var(--text-primary);
+        }
+
+        .sidebar-compact,
+        .sidebar-compact .icon-btn,
+        .sidebar-compact .logo {
+            color: var(--text-primary) !important;
+        }
+        .sidebar-compact .icon-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            margin: 0.5rem auto;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            transition: background 0.2s, color 0.2s;
+            position: relative;
+        }
+        .sidebar-compact .icon-btn.active,
+        .sidebar-compact .icon-btn:hover {
+            color: #fff !important;
+        }
+        .sidebar-compact .icon-btn .tooltip {
+            color: #fff !important;
+        }
+        .sidebar-compact .logo {
+            color: var(--primary-color) !important;
+        }
+        /* Fix for SVG icons in sidebar */
+        .sidebar-compact .icon-btn svg,
+        .sidebar-compact .icon-btn i {
+            color: inherit !important;
+            fill: currentColor !important;
+        }
+
+        /* Replace all uses of var(--bs-heading-color) with var(--text-primary) */
+        /* Example: */
+        /* color: var(--bs-heading-color); => color: var(--text-primary); */
+        /* If you have any heading color overrides: */
+        h1, h2, h3, h4, h5, h6,
+        .h1, .h2, .h3, .h4, .h5, .h6 {
+            color: var(--text-primary) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Compact -->
+    <nav class="sidebar-compact">
+        <div>
+            <div class="logo">L</div>
+            <button class="icon-btn active" title="Dashboard">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span class="tooltip">Dashboard</span>
+            </button>
+            <button class="icon-btn" title="My Agents" onclick="window.location.href='create-agent.html'">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span class="tooltip">My Agents</span>
+            </button>
+            <button class="icon-btn" title="Tasks">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                <span class="tooltip">Tasks</span>
+            </button>
+            <button class="icon-btn" title="Training">
+                <i class="fas fa-brain"></i>
+                <span class="tooltip">Training</span>
+            </button>
+            <button class="icon-btn" title="Analytics">
+                <i class="fas fa-chart-line"></i>
+                <span class="tooltip">Analytics</span>
+            </button>
+            <button class="icon-btn" title="Settings">
+                <i class="fas fa-cog"></i>
+                <span class="tooltip">Settings</span>
+            </button>
+        </div>
+        <div class="sidebar-bottom">
+            <button class="icon-btn" title="Logout">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-5 opacity-75" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                <span class="tooltip">Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="header d-flex justify-content-between align-items-center">
+        <div>
+            <button class="btn btn-link text-light" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="dropdown me-3">
+                <button class="btn btn-link position-relative text-light" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        3
+                    </span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                    <li><a class="dropdown-item" href="#">Task completed: Data analysis</a></li>
+                    <li><a class="dropdown-item" href="#">Agent "Research Assistant" is ready</a></li>
+                    <li><a class="dropdown-item" href="#">System update available</a></li>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-link d-flex align-items-center text-light" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://via.placeholder.com/36" class="rounded-circle me-2" alt="User" width="36" height="36" style="border: 2px solid rgba(255,255,255,0.2)">
+                    <span>Admin User</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><hr class="dropdown-divider" style="border-color: var(--glass-border)"></li>
+                    <li><a class="dropdown-item" href="#">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0 fw-bold">AI Agent Dashboard</h1>
+            <a href="create-agent.html" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Create New Agent
+            </a>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card primary h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="text-uppercase fw-bold mb-1 text-secondary" style="font-size: 0.8rem;">Active Agents</div>
+                                <div class="h3 mb-0 fw-bold">12</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-robot stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card success h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="text-uppercase fw-bold mb-1 text-secondary" style="font-size: 0.8rem;">Tasks Completed</div>
+                                <div class="h3 mb-0 fw-bold">243</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-circle stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card info h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="text-uppercase fw-bold mb-1 text-secondary" style="font-size: 0.8rem;">Response Time</div>
+                                <div class="h3 mb-0 fw-bold">1.2s</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clock stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card stat-card warning h-100">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="text-uppercase fw-bold mb-1 text-secondary" style="font-size: 0.8rem;">API Calls</div>
+                                <div class="h3 mb-0 fw-bold">10,273</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-exchange-alt stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="row">
+            <!-- Performance Chart -->
+            <div class="col-xl-8 col-lg-7">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 fw-bold">Agent Performance</h6>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-link text-light" type="button" id="performanceDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="performanceDropdown">
+                                <li><a class="dropdown-item" href="#">Last 7 Days</a></li>
+                                <li><a class="dropdown-item" href="#">Last 30 Days</a></li>
+                                <li><a class="dropdown-item" href="#">Last Quarter</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Agent Status -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="m-0 fw-bold">AI Agent Status</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="status-indicator online"></span>
+                                    Customer Support Agent
+                                </div>
+                                <span class="badge bg-primary rounded-pill">Active</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="status-indicator busy"></span>
+                                    Data Analysis Agent
+                                </div>
+                                <span class="badge bg-warning rounded-pill">Busy</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="status-indicator online"></span>
+                                    Research Assistant
+                                </div>
+                                <span class="badge bg-primary rounded-pill">Active</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="status-indicator offline"></span>
+                                    Content Generator
+                                </div>
+                                <span class="badge bg-danger rounded-pill">Offline</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="status-indicator online"></span>
+                                    Email Responder
+                                </div>
+                                <span class="badge bg-primary rounded-pill">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Content Row -->
+        <div class="row">
+            <!-- Recent Activities -->
+            <div class="col-xl-6 col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 fw-bold">Recent Activities</h6>
+                        <a href="#" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Customer Support Agent</strong> resolved ticket #3421</div>
+                                <div class="small text-muted">5 min ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Research Assistant</strong> completed market analysis report</div>
+                                <div class="small text-muted">23 min ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>System</strong> completed daily backup</div>
+                                <div class="small text-muted">1 hour ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Data Analysis Agent</strong> started processing dataset #347</div>
+                                <div class="small text-muted">2 hours ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Email Responder</strong> sent 24 replies</div>
+                                <div class="small text-muted">4 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Usage -->
+            <div class="col-xl-6 col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="m-0 fw-bold">Resource Usage</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div>CPU Usage</div>
+                                <div>67%</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 67%;" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div>Memory Usage</div>
+                                <div>45%</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div>API Rate Limit</div>
+                                <div>81%</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 81%;" aria-valuenow="81" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div>Storage</div>
+                                <div>32%</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 32%;" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Third Content Row -->
+        <div class="row">
+            <!-- Agent Types -->
+            <div class="col-xl-4 col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="m-0 fw-bold">Agent Types</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="agentTypesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-xl-4 col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="m-0 fw-bold">Quick Actions</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-plus me-1"></i> Deploy New Agent
+                            </button>
+                            <button class="btn btn-success" type="button">
+                                <i class="fas fa-sync me-1"></i> Update All Agents
+                            </button>
+                            <button class="btn btn-info" type="button">
+                                <i class="fas fa-download me-1"></i> Export Reports
+                            </button>
+                            <button class="btn btn-warning" type="button">
+                                <i class="fas fa-tools me-1"></i> System Maintenance
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Tasks -->
+            <div class="col-xl-4 col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 fw-bold">Upcoming Tasks</h6>
+                        <a href="#" class="btn btn-sm btn-primary">View Calendar</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>Data Processing</div>
+                                    <div><span class="badge bg-primary">Today</span></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>Weekly Report Generation</div>
+                                    <div><span class="badge bg-primary">Today</span></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>System Backup</div>
+                                    <div><span class="badge bg-info">Tomorrow</span></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>Model Training</div>
+                                    <div><span class="badge bg-warning">In 2 days</span></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>Performance Review</div>
+                                    <div><span class="badge bg-secondary">Next week</span></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Toggle sidebar
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (sidebar.style.marginLeft === '-250px') {
+                sidebar.style.marginLeft = '0';
+                mainContent.style.marginLeft = 'var(--sidebar-width)';
+            } else {
+                sidebar.style.marginLeft = '-250px';
+                mainContent.style.marginLeft = '0';
+            }
+        });
+
+        // Set dark mode for Chart.js
+        Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
+        Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.1)';
+
+        // Performance Chart
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Response Time (ms)',
+                    data: [1200, 1100, 1300, 900, 800, 750, 700],
+                    borderColor: 'rgba(70, 194, 255, 0.8)',
+                    backgroundColor: 'rgba(70, 194, 255, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: 'rgba(70, 194, 255, 1)',
+                    pointBorderColor: 'rgba(70, 194, 255, 1)',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(70, 194, 255, 1)',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }, {
+                    label: 'Tasks Completed',
+                    data: [150, 200, 175, 220, 260, 280, 310],
+                    borderColor: 'rgba(36, 204, 146, 0.8)',
+                    backgroundColor: 'rgba(36, 204, 146, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: 'rgba(36, 204, 146, 1)',
+                    pointBorderColor: 'rgba(36, 204, 146, 1)',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(36, 204, 146, 1)',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Agent Types Chart
+        const agentTypesCtx = document.getElementById('agentTypesChart').getContext('2d');
+        const agentTypesChart = new Chart(agentTypesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Support', 'Research', 'Data Analysis', 'Content', 'Other'],
+                datasets: [{
+                    data: [5, 3, 2, 1, 1],
+                    backgroundColor: [
+                        'rgba(114, 137, 254, 0.8)',
+                        'rgba(36, 204, 146, 0.8)',
+                        'rgba(70, 194, 255, 0.8)',
+                        'rgba(255, 193, 61, 0.8)',
+                        'rgba(180, 180, 180, 0.8)'
+                    ],
+                    hoverBackgroundColor: [
+                        'rgba(114, 137, 254, 1)',
+                        'rgba(36, 204, 146, 1)',
+                        'rgba(70, 194, 255, 1)',
+                        'rgba(255, 193, 61, 1)',
+                        'rgba(180, 180, 180, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderColor: 'rgba(20, 25, 39, 0.6)'
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            padding: 15,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                cutout: '70%',
+                radius: '90%'
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Tasks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --primary-color: rgba(114, 137, 254, 0.9);
+            --secondary-color: rgba(80, 110, 228, 0.9);
+            --success-color: rgba(36, 204, 146, 0.9);
+            --info-color: rgba(70, 194, 255, 0.9);
+            --warning-color: rgba(255, 193, 61, 0.9);
+            --danger-color: rgba(255, 99, 99, 0.9);
+            --dark-bg: #0c0f18;
+            --card-bg: rgba(20, 25, 39, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --blur-effect: blur(12px);
+        }
+        body {
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 25% 15%, rgba(114, 137, 254, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 75% 85%, rgba(70, 194, 255, 0.1) 0%, transparent 25%);
+            color: var(--text-primary);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: var(--header-height);
+            background: rgba(15, 20, 30, 0.7);
+            backdrop-filter: var(--blur-effect);
+            border-right: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            z-index: 100;
+            box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            color: var(--text-secondary);
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 0.25rem 0.7rem;
+            border-radius: 10px;
+        }
+        .sidebar .nav-link:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateX(3px);
+        }
+        .sidebar .nav-link.active {
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 0 15px rgba(114, 137, 254, 0.4);
+        }
+        .sidebar .nav-link i {
+            margin-right: 0.75rem;
+            width: 1.25rem;
+            text-align: center;
+        }
+        .header {
+            height: var(--header-height);
+            background-color: rgba(15, 20, 30, 0.7);
+            backdrop-filter: var(--blur-effect);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 101;
+            padding: 0 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header .dropdown-menu {
+            background: rgba(22, 28, 45, 0.85);
+            backdrop-filter: var(--blur-effect);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .header .dropdown-item {
+            color: var(--text-secondary);
+        }
+        .header .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: calc(var(--header-height) + 1.5rem);
+            min-height: 100vh;
+            padding-right: 1.5rem;
+            padding-left: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-effect);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .card-header {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 1.2rem;
+        }
+        .btn {
+            border-radius: 10px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 1px solid var(--glass-border);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: transparent;
+        }
+        .btn-primary:hover, .btn-primary:focus {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            box-shadow: 0 0 15px rgba(114, 137, 254, 0.5);
+            transform: translateY(-2px);
+        }
+        .badge {
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            backdrop-filter: var(--blur-effect);
+        }
+        .table {
+            color: var(--text-primary);
+            background: transparent;
+        }
+        .table thead th {
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.02);
+        }
+        .table tbody tr {
+            border-bottom: 1px solid var(--glass-border);
+            transition: background 0.2s;
+        }
+        .table tbody tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .form-control, .form-select {
+            background: rgba(30, 35, 50, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 0.6rem 0.8rem;
+            transition: all 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(40, 45, 65, 0.6);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(114, 137, 254, 0.2);
+            color: var(--text-primary);
+        }
+        .form-control::placeholder {
+            color: var(--text-secondary);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="text-center pt-2 pb-4">
+            <h4 class="fw-bold mb-0">AI Agent Hub</h4>
+            <h6 class="text-secondary">Control Center</h6>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="dashboard1.html" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="create-agent.html" class="nav-link">
+                    <i class="fas fa-robot"></i>
+                    My Agents
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-tasks"></i>
+                    Tasks
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    Training
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- Header -->
+    <div class="header d-flex justify-content-between align-items-center">
+        <div>
+            <button class="btn btn-link text-light" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="dropdown me-3">
+                <button class="btn btn-link position-relative text-light" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        3
+                    </span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                    <li><a class="dropdown-item" href="#">Task completed: Data analysis</a></li>
+                    <li><a class="dropdown-item" href="#">Agent "Research Assistant" is ready</a></li>
+                    <li><a class="dropdown-item" href="#">System update available</a></li>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-link d-flex align-items-center text-light" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://via.placeholder.com/36" class="rounded-circle me-2" alt="User" width="36" height="36" style="border: 2px solid rgba(255,255,255,0.2)">
+                    <span>Admin User</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><hr class="dropdown-divider" style="border-color: var(--glass-border)"></li>
+                    <li><a class="dropdown-item" href="#">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0 fw-bold">Tasks</h1>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> New Task
+            </button>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header d-flex flex-wrap gap-2 align-items-center">
+                <span class="fw-bold me-3">Filter:</span>
+                <select class="form-select form-select-sm w-auto" id="filterStatus">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="running">Running</option>
+                    <option value="done">Done</option>
+                    <option value="failed">Failed</option>
+                </select>
+                <select class="form-select form-select-sm w-auto ms-2" id="filterAgent">
+                    <option value="">All Agents</option>
+                    <option>Customer Support Agent</option>
+                    <option>Research Assistant</option>
+                    <option>Data Analysis Agent</option>
+                </select>
+                <input type="text" class="form-control form-control-sm w-auto ms-2" id="searchTask" placeholder="Search...">
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Agent</th>
+                            <th>Status</th>
+                            <th>Started</th>
+                            <th>Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasksTable">
+                        <tr>
+                            <td>Analyze customer feedback</td>
+                            <td>Customer Support Agent</td>
+                            <td><span class="badge bg-warning">Running</span></td>
+                            <td>2024-06-10 14:23</td>
+                            <td>2m 15s</td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fas fa-stop"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Generate market report</td>
+                            <td>Research Assistant</td>
+                            <td><span class="badge bg-success">Done</span></td>
+                            <td>2024-06-10 13:00</td>
+                            <td>5m 42s</td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-secondary"><i class="fas fa-redo"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Process sales data</td>
+                            <td>Data Analysis Agent</td>
+                            <td><span class="badge bg-danger">Failed</span></td>
+                            <td>2024-06-10 12:45</td>
+                            <td>1m 10s</td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-redo"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Send weekly summary</td>
+                            <td>Email Responder</td>
+                            <td><span class="badge bg-primary">Pending</span></td>
+                            <td>2024-06-10 15:00</td>
+                            <td>-</td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar toggle
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            if (sidebar.style.marginLeft === '-250px') {
+                sidebar.style.marginLeft = '0';
+                mainContent.style.marginLeft = 'var(--sidebar-width)';
+            } else {
+                sidebar.style.marginLeft = '-250px';
+                mainContent.style.marginLeft = '0';
+            }
+        });
+        // Simple filter/search (client-side demo)
+        const filterStatus = document.getElementById('filterStatus');
+        const filterAgent = document.getElementById('filterAgent');
+        const searchTask = document.getElementById('searchTask');
+        const tasksTable = document.getElementById('tasksTable');
+        function filterTasks() {
+            const status = filterStatus.value;
+            const agent = filterAgent.value.toLowerCase();
+            const search = searchTask.value.toLowerCase();
+            Array.from(tasksTable.rows).forEach(row => {
+                const rowStatus = row.cells[2].innerText.trim().toLowerCase();
+                const rowAgent = row.cells[1].innerText.trim().toLowerCase();
+                const rowTask = row.cells[0].innerText.trim().toLowerCase();
+                let show = true;
+                if (status && !rowStatus.includes(status)) show = false;
+                if (agent && !rowAgent.includes(agent)) show = false;
+                if (search && !rowTask.includes(search)) show = false;
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        filterStatus.addEventListener('change', filterTasks);
+        filterAgent.addEventListener('change', filterTasks);
+        searchTask.addEventListener('input', filterTasks);
+    </script>
+</body>
+</html>

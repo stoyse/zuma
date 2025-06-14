@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zuma - Next Generation AI Agents</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: rgba(114, 137, 254, 0.9);
+            --secondary-color: rgba(80, 110, 228, 0.9);
+            --success-color: rgba(36, 204, 146, 0.9);
+            --info-color: rgba(70, 194, 255, 0.9);
+            --warning-color: rgba(255, 193, 61, 0.9);
+            --danger-color: rgba(255, 99, 99, 0.9);
+            --dark-bg: #0c0f18;
+            --darker-bg: #070a12;
+            --card-bg: rgba(20, 25, 39, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --glow-primary: 0 0 15px rgba(114, 137, 254, 0.4);
+            --blur-effect: blur(12px);
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        /* Background gradient animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 15%, rgba(114, 137, 254, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 75% 85%, rgba(70, 194, 255, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 25%, rgba(255, 193, 61, 0.08) 0%, transparent 25%);
+            z-index: -2;
+        }
+
+        /* Animated gradient */
+        .bg-gradient {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: -1;
+        }
+        
+        .bg-gradient::before {
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(114, 137, 254, 0.05) 0%, 
+                rgba(70, 194, 255, 0.05) 25%, 
+                rgba(36, 204, 146, 0.05) 50%, 
+                rgba(114, 137, 254, 0.05) 100%);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+
+        .navbar {
+            background: rgba(20, 25, 39, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .navbar.scrolled {
+            padding: 0.5rem 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary-color), var(--info-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            margin-right: 2rem;
+        }
+
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            bottom: 0;
+            right: -15px;
+            box-shadow: 0 0 10px 2px var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin: 0 1rem;
+            transition: all 0.3s;
+            position: relative;
+            padding: 0.4rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(to right, var(--primary-color), var(--info-color));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 100px;
+            padding: 0.7rem 2rem;
+            font-weight: 600;
+            box-shadow: var(--glow-primary);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(114, 137, 254, 0.5);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-150%) rotate(45deg); }
+            100% { transform: translateX(150%) rotate(45deg); }
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            padding: 0.7rem 2rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            transform: translateY(-3px);
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 5;
+            max-width: 700px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .hero strong {
+            background: linear-gradient(to right, var(--info-color), var(--success-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .features {
+            padding: 6rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--info-color));
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.5s;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            z-index: -1;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            background: rgba(30, 35, 50, 0.6);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotateY(180deg);
+        }
+
+        .feature-icon.primary {
+            color: var(--primary-color);
+        }
+
+        .feature-icon.success {
+            color: var(--success-color);
+        }
+
+        .feature-icon.info {
+            color: var(--info-color);
+        }
+
+        .feature-icon.warning {
+            color: var(--warning-color);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .demo-section {
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-card {
+            background: rgba(20, 25, 39, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+        }
+
+        .demo-card img {
+            border-radius: 15px;
+            width: 100%;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s;
+            border: 1px solid var(--glass-border);
+        }
+
+        .demo-card:hover img {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .stats-section {
+            padding: 6rem 0;
+            background: rgba(15, 20, 30, 0.5);
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--primary-color), var(--info-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .cta-section {
+            padding: 8rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, rgba(20, 25, 39, 0.8), rgba(30, 35, 50, 0.8));
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 4rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .cta-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                0deg,
+                transparent,
+                rgba(114, 137, 254, 0.1),
+                rgba(114, 137, 254, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            z-index: -1;
+            animation: shimmerBackground 10s linear infinite;
+        }
+
+        @keyframes shimmerBackground {
+            0% { transform: translateY(100%) rotate(45deg); }
+            100% { transform: translateY(-100%) rotate(45deg); }
+        }
+
+        .cta-card h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-card p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(0, -15px); }
+            100% { transform: translate(0, 0px); }
+        }
+
+        footer {
+            padding: 4rem 0;
+            background: rgba(15, 20, 30, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary-color), var(--info-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .footer-links h5 {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-links h5::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 2px;
+            background: var(--primary-color);
+            bottom: -5px;
+            left: 0;
+            border-radius: 1px;
+        }
+
+        .footer-links ul {
+            padding: 0;
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+            margin-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+        }
+
+        /* Particle animation */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        /* Typing animation */
+        .typing::after {
+            content: '|';
+            animation: typing 1s infinite;
+        }
+
+        @keyframes typing {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Wave animation */
+        .wave {
+            position: absolute;
+            width: 100%;
+            bottom: -5px;
+            left: 0;
+        }
+
+        .wave svg {
+            display: block;
+            width: 100%;
+            height: 100px;
+        }
+
+        .wave path {
+            fill: rgba(15, 20, 30, 0.5);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            .cta-card {
+                padding: 3rem 2rem;
+            }
+            .cta-card h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                text-align: center;
+                padding: 6rem 0;
+                height: auto;
+                min-height: 100vh;
+            }
+            .demo-card {
+                padding: 2rem;
+            }
+            .stat-item {
+                margin-bottom: 2rem;
+            }
+            .footer-section {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            .footer-links h5::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(114, 137, 254, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(114, 137, 254, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background gradient -->
+    <div class="bg-gradient"></div>
+    
+    <!-- Particles animation -->
+    <div class="particles"></div>
+    
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg" id="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="#">zuma</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#demo">Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Pricing</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="dashboard1.html" class="btn btn-outline me-3">Sign In</a>
+                    <a href="dashboard1.html" class="btn btn-primary">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content" data-aos="fade-right" data-aos-duration="1000">
+                    <h1>Build Your <strong>AI Agents</strong> with Visual Workflows</h1>
+                    <p>Create, deploy, and manage intelligent AI agents that automate complex tasks without writing code. A next-generation platform for the AI-powered future.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="create-agent.html" class="btn btn-primary">Create Your First Agent</a>
+                        <a href="#demo" class="btn btn-outline">See How It Works</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="300">
+                    <img src="public/hero.png" alt="AI Agent Platform" class="img-fluid floating" style="border-radius: 20px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border);">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Powerful Features</h2>
+                <p>Everything you need to build sophisticated AI agents</p>
+            </div>
+            
+            <div class="row">
+                <!-- Feature 1 -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon primary">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Visual Workflow Builder</h3>
+                        <p>Design complex AI agent workflows using our intuitive drag-and-drop interface, connecting data sources, AI models, and outputs with ease.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon info">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Pre-built AI Components</h3>
+                        <p>Access a library of ready-to-use AI components including language models, classifiers, and task-specific tools to build your agent faster.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon success">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Multiple Data Sources</h3>
+                        <p>Connect to databases, APIs, files, and webhooks to give your agents access to the data they need to perform complex tasks.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card">
+                        <div class="feature-icon warning">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Real-time Monitoring</h3>
+                        <p>Track your agent's performance, resource usage, and task completion with comprehensive dashboards and analytics.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-card">
+                        <div class="feature-icon info">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>Enterprise Security</h3>
+                        <p>Keep your data and AI agents secure with enterprise-grade encryption, access controls, and compliance features.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-card">
+                        <div class="feature-icon primary">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>API Integrations</h3>
+                        <p>Seamlessly integrate with thousands of services and applications through our extensive API connectors and custom webhook support.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo section -->
+    <section class="demo-section" id="demo">
+        <div class="wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill-opacity="1" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,224C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                    <h2 class="mb-4">See Zuma in Action</h2>
+                    <p class="mb-4">Watch how easy it is to build and deploy AI agents that can transform your business operations and customer experiences.</p>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3"><i class="fas fa-check-circle text-success"></i></div>
+                            <div>No coding required - build agents visually</div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3"><i class="fas fa-check-circle text-success"></i></div>
+                            <div>Deploy agents in minutes, not months</div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="me-3"><i class="fas fa-check-circle text-success"></i></div>
+                            <div>Scale automatically as your needs grow</div>
+                        </div>
+                    </div>
+                    <a href="create-agent.html" class="btn btn-primary">Try It Yourself</a>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="demo-card">
+                        <img src="public/demo.png" alt="Platform Demo" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="500">0</div>
+                        <div class="stat-label">Businesses Empowered</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="1000">0</div>
+                        <div class="stat-label">AI Agents Created</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="50000">0</div>
+                        <div class="stat-label">Tasks Automated</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="99">0</div>
+                        <div class="stat-label">Customer Satisfaction</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card" data-aos="zoom-in">
+                <h2>Ready to Build Your First AI Agent?</h2>
+                <p>Join thousands of forward-thinking businesses already using zuma to transform their operations with AI. Get started today with our free tier and scale as you grow.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="dashboard1.html" class="btn btn-primary">Get Started Free</a>
+                    <a href="#" class="btn btn-outline">Schedule a Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 footer-section">
+                    <div class="footer-brand">zuma</div>
+                    <p class="mb-4">The next generation platform for building and deploying intelligent AI agents that automate complex tasks.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 footer-links">
+                    <h5>Product</h5>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 footer-links">
+                    <h5>Resources</h5>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">API Reference</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 footer-links">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Press Kit</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 footer-links">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center copyright">
+                    <p>&copy; 2023 Zuma Technologies. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            once: true
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                document.getElementById('navbar').classList.add('scrolled');
+            } else {
+                document.getElementById('navbar').classList.remove('scrolled');
+            }
+        });
+
+        // Generate particles
+        function generateParticles() {
+            const particles = document.querySelector('.particles');
+            const colors = ['#7289fc', '#46c2ff', '#24cc92', '#ffc13d'];
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2-6px
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random color
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.backgroundColor = color;
+                particle.style.boxShadow = `0 0 ${size}px ${color}`;
+                
+                // Random animation
+                const animDuration = Math.random() * 20 + 10;
+                const animDelay = Math.random() * 10;
+                particle.style.animation = `floating ${animDuration}s ease-in-out ${animDelay}s infinite`;
+                
+                particles.appendChild(particle);
+            }
+        }
+        generateParticles();
+
+        // Animate stat counters
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-count'));
+                const duration = 2000; // 2 seconds
+                const increment = target / (duration / 16); // 60 FPS
+                
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, 16);
+            });
+        }
+
+        // Trigger stat animation when the stats section comes into view
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                animateStats();
+                observer.disconnect();
+            }
+        });
+        observer.observe(document.querySelector('.stats-section'));
+    </script>
+</body>
+</html>
