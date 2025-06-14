@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Aktiviere das virtuelle Python-Umfeld
+source venv/bin/activate
+
 # Starte FastAPI/Uvicorn im Hintergrund
 uvicorn main:app --host 0.0.0.0 --port 9000 &
 
