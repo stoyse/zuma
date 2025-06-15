@@ -10,6 +10,7 @@ export default function PricingPage() {
       features: [
         "1 AI Agent",
         "100 Tasks/month",
+        "Basic AI Models", // Hinzugefügt
         "Basic Analytics",
         "Community Support",
       ],
@@ -24,6 +25,7 @@ export default function PricingPage() {
       features: [
         "10 AI Agents",
         "5,000 Tasks/month",
+        "Advanced AI Models", // Hinzugefügt
         "Advanced Analytics",
         "Priority Email Support",
         "API Access",
@@ -39,6 +41,7 @@ export default function PricingPage() {
       features: [
         "Unlimited AI Agents",
         "Unlimited Tasks",
+        "Custom AI Models & Fine-tuning", // Hinzugefügt
         "Custom Analytics & Reporting",
         "Dedicated Support Manager",
         "On-premise Deployment Option",
