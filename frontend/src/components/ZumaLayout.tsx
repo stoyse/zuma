@@ -228,8 +228,9 @@ export default function ZumaLayout({ children }: NavbarProps) {
             {iconsLoaded ? <i className="fas fa-chart-line"></i> : "C"}
             <span className="tooltip" style={tooltipStyles}>Analytics</span>
           </Link>
+          {/* Neuer Link für Einstellungen */}
           <Link 
-            href="/settings" 
+            href="/dashboard/settings" 
             style={activePage === "settings" ? activeIconBtnStyles : iconBtnStyles}
             onMouseOver={(e) => {
               const tooltip = e.currentTarget.querySelector('.tooltip') as HTMLElement;

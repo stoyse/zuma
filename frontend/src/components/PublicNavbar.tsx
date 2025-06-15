@@ -21,11 +21,11 @@ export default function PublicNavbar() {
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg" id="public-navbar" style={{
-      background: "rgba(20, 25, 39, 0.7)",
-      backdropFilter: "var(--blur-effect)",
-      WebkitBackdropFilter: "var(--blur-effect)",
-      borderBottom: "1px solid var(--glass-border)",
+    <nav className="navbar" id="public-navbar" style={{
+      background: "transparent",
+      backdropFilter: "none",
+      borderBottom: "none",
+      boxShadow: "none",
       padding: "1rem 2rem",
       position: "fixed",
       width: "100%",

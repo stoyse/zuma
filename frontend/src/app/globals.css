@@ -11,3 +11,294 @@
 body {
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 }
+
+/* Landingpage Animations und Styles */
+@keyframes pulseScale {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+@keyframes progressAnimation {
+  from { width: 0; }
+  to { width: 60%; }
+}
+
+/* Particle Animation */
+.particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+  opacity: 0;
+  animation: particleFloat 15s linear infinite;
+}
+
+@keyframes particleFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) rotate(360deg) scale(0);
+  }
+}
+
+/* Hero Circles */
+.hero-circles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.hero-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(114,137,254,0.2) 0%, rgba(114,137,254,0) 70%);
+  animation: pulseScale 8s infinite;
+  opacity: 0.5;
+}
+
+/* 3D Card Effect */
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.5s;
+}
+
+.card-3d:hover {
+  transform: rotateY(5deg) rotateX(5deg) translateZ(10px);
+  box-shadow: -15px 20px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Glass Card Advanced */
+.glass-card-advanced {
+  background: rgba(20, 25, 39, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 2rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  position: relative;
+}
+
+.glass-card-advanced:hover {
+  transform: translateY(-10px);
+  border-color: rgba(114, 137, 254, 0.3);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.2),
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(114, 137, 254, 0.1);
+}
+
+/* Animation Utilities */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+
+.reveal-on-scroll.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-list > * {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.stagger-list.active > *:nth-child(1) { 
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.1s;
+}
+.stagger-list.active > *:nth-child(2) { 
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.2s;
+}
+.stagger-list.active > *:nth-child(3) { 
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.3s;
+}
+
+/* Floating Elements */
+.floating-element {
+  animation: floatUpDown 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.floating-element-slow {
+  animation: floatUpDown 7s ease-in-out infinite;
+}
+
+.floating-element-fast {
+  animation: floatUpDown 3s ease-in-out infinite;
+}
+
+@keyframes floatUpDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Gradient Text */
+.gradient-text {
+  background-size: 300% 300%;
+  background-image: linear-gradient(
+    -45deg, 
+    var(--primary-color) 0%, 
+    var(--info-color) 25%, 
+    var(--success-color) 50%, 
+    var(--info-color) 75%, 
+    var(--primary-color) 100%
+  );
+  animation: animateGradient 6s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Verbesserte Gradient-Text-Animation */
+@keyframes animateGradient { 
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Fallback für Browser, die Gradienten-Text nicht unterstützen */
+@supports not (background-clip: text) {
+  .gradient-text, 
+  h1[style*="background-clip: text"], 
+  h2[style*="background-clip: text"] {
+    background: none !important;
+    color: var(--primary-color) !important;
+    -webkit-text-fill-color: var(--primary-color) !important;
+  }
+}
+
+/* Text Splitting Animation */
+.split-text .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.split-text.reveal .char {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gradient Border */
+.gradient-border {
+  position: relative;
+  border-radius: 20px;
+  padding: 4px;
+  background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+}
+
+.gradient-border-content {
+  background: var(--card-bg);
+  border-radius: 16px;
+  height: 100%;
+  width: 100%;
+  padding: 2rem;
+}
+
+/* Moving Background Pattern */
+.bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 20px 20px;
+  background-image: 
+    radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+  z-index: -1;
+  animation: patternMove 20s linear infinite;
+}
+
+@keyframes patternMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
+/* CTA Card */
+.cta-card {
+  background: linear-gradient(135deg, rgba(20, 25, 39, 0.8), rgba(30, 35, 50, 0.8));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 4rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* Delays für Animationen */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* Animation für Landing Page Elemente */
+.animate-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.animate-in.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Magnetic Buttons */
+.btn-magnetic {
+  position: relative;
+  transition: transform 0.3s;
+  transform-style: preserve-3d;
+}
+
+/* Transparenter Navbar für Hero-Bereich */
+.navbar-transparent {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.navbar-transparent .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar-transparent .nav-link:hover {
+  color: #fff;
+}
