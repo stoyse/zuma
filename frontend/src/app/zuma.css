@@ -1,0 +1,270 @@
+/* Hier ist die Haupt-CSS-Datei basierend auf index.html */
+
+:root {
+    --primary-color: rgba(114, 137, 254, 0.9);
+    --secondary-color: rgba(80, 110, 228, 0.9);
+    --success-color: rgba(36, 204, 146, 0.9);
+    --info-color: rgba(70, 194, 255, 0.9);
+    --warning-color: rgba(255, 193, 61, 0.9);
+    --danger-color: rgba(255, 99, 99, 0.9);
+    --dark-bg: #0c0f18;
+    --darker-bg: #070a12;
+    --card-bg: rgba(20, 25, 39, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --glow-primary: 0 0 15px rgba(114, 137, 254, 0.4);
+    --blur-effect: blur(12px);
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+/* Background gradient animation */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 85% 25%, rgba(255, 193, 61, 0.08) 0%, transparent 25%);
+    z-index: -2;
+}
+
+/* Animated gradient */
+.bg-gradient {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -1;
+}
+
+.bg-gradient::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(114, 137, 254, 0.05) 100%);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+}
+
+.navbar {
+    background: rgba(20, 25, 39, 0.7);
+    backdrop-filter: var(--blur-effect);
+    -webkit-backdrop-filter: var(--blur-effect);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1rem 2rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    transition: all 0.3s;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.8rem;
+    background: linear-gradient(to right, var(--primary-color), var(--info-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+    margin-right: 2rem;
+    text-decoration: none;
+}
+
+.navbar-brand::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    bottom: 0;
+    right: -15px;
+    box-shadow: 0 0 10px 2px var(--primary-color);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.content-container {
+    padding-top: 100px;
+    padding-bottom: 50px;
+    min-height: 100vh;
+}
+
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: var(--blur-effect);
+    -webkit-backdrop-filter: var(--blur-effect);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.5s;
+}
+
+.glass-card:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+input {
+    width: 100%;
+    background: rgba(30, 35, 50, 0.6);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(114, 137, 254, 0.2);
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 100px;
+    padding: 0.7rem 2rem;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: var(--glow-primary);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(114, 137, 254, 0.5);
+}
+
+button:disabled {
+    background: rgba(114, 137, 254, 0.4);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-150%) rotate(45deg); }
+    100% { transform: translateX(150%) rotate(45deg); }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, var(--primary-color), var(--info-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+pre {
+    background: rgba(30, 35, 50, 0.6);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 1rem;
+    color: var(--text-primary);
+    font-family: 'SF Mono', 'Consolas', monospace;
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: pre-wrap;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: var(--glass-border);
+    margin: 2rem 0;
+}
+
+.message-success {
+    background: rgba(36, 204, 146, 0.1);
+    border: 1px solid rgba(36, 204, 146, 0.3);
+    color: var(--success-color);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.message-error {
+    background: rgba(255, 99, 99, 0.1);
+    border: 1px solid rgba(255, 99, 99, 0.3);
+    color: var(--danger-color);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
