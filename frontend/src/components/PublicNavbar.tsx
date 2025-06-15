@@ -72,7 +72,7 @@ export default function PublicNavbar() {
           }}>
             Sign In
           </Link>
-          <Link href="/dashboard" className="btn-primary" style={{
+          <Link href="/create-organisation" className="btn-primary" style={{
             background: "linear-gradient(135deg, var(--primary-color), var(--secondary-color))",
             border: "none",
             borderRadius: "100px",

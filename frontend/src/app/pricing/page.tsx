@@ -15,7 +15,7 @@ export default function PricingPage() {
         "Community Support",
       ],
       buttonText: "Get Started Free",
-      buttonLink: "/dashboard",
+      buttonLink: "/create-organisation", // Geändert
       featured: false,
     },
     {
@@ -31,7 +31,7 @@ export default function PricingPage() {
         "API Access",
       ],
       buttonText: "Choose Pro",
-      buttonLink: "/signup?plan=pro", // Beispiel-Link
+      buttonLink: "/create-organisation", // Geändert
       featured: true,
     },
     {
@@ -48,7 +48,7 @@ export default function PricingPage() {
         "SLA & Security Reviews",
       ],
       buttonText: "Contact Sales",
-      buttonLink: "/contact-sales",
+      buttonLink: "/create-organisation", // Geändert (oder zu einer Kontaktseite, falls gewünscht)
       featured: false,
     },
   ];

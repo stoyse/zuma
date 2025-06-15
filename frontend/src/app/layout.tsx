@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,19 +28,25 @@ export default function RootLayout({
     <html lang="de">
       <head>
         {/* FontAwesome CSS direkt im head-Tag laden */}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* FontAwesome JS für alle Seiten verfügbar machen */}
-        <Script 
+        <Script
           src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
           strategy="afterInteractive"
         />
         {/* Globaler Hintergrundgradient */}
         <div className="bg-gradient"></div>
-        {children} {/* ZumaLayout wird hier nicht mehr verwendet */}
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

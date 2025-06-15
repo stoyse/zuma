@@ -47,7 +47,7 @@ export default function Home() {
                   Sign In
                 </Link>
                 
-                <Link href="/dashboard" style={{
+                <Link href="/create-organisation" style={{ // Href geändert
                   background: "transparent",
                   border: "1px solid var(--glass-border)",
                   borderRadius: "100px",
@@ -57,7 +57,7 @@ export default function Home() {
                   textDecoration: "none",
                   display: "inline-block"
                 }}>
-                  Dashboard
+                  Start Your Journey {/* Text geändert */}
                 </Link>
               </div>
             </div>

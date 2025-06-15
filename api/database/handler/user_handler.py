@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
 import os
+from utils.generate_userid import generate_userid
 
 # Load environment variables from .env file
 load_dotenv()
@@ -71,6 +72,43 @@ def check_user(email):
                 return None
     except psycopg2.Error as e:
         print(f"Fehler beim Überprüfen des Benutzers: {e}")
+        return None
+    finally:
+        close_connection(connection)
+
+def createUser(email, name, organisation):
+    """
+    Erstellt einen neuen Benutzer in der Datenbank.
+    :param email: E-Mail des Benutzers (str)
+    :param name: Name des Benutzers (str)
+    :param organisation: Organisation des Benutzers (str)
+    """
+    connection = connect_to_db()
+    user_id = generate_userid(organisation)  # Generiere eine eindeutige Benutzer-ID
+    if not connection:
+        print("Keine Datenbankverbindung möglich.")
+        return None
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO users (userid, email, name, organisation) VALUES (%s, %s, %s, %s) RETURNING userid;",
+                (user_id, email, name, organisation)
+            )
+            user_id_tuple = cursor.fetchone() # Sicherstellen, dass wir das Ergebnis korrekt abrufen
+            if user_id_tuple:
+                user_id = user_id_tuple[0]
+            else:
+                # Dieser Fall sollte nicht eintreten, wenn RETURNING userid verwendet wird und der Insert erfolgreich war.
+                # Aber zur Sicherheit eine Fehlerbehandlung hinzufügen.
+                print(f"Fehler beim Erstellen des Benutzers: userid konnte nicht abgerufen werden.")
+                connection.rollback()
+                return None
+            
+            connection.commit()
+            print(f"Benutzer erstellt: ID={user_id}, Name={name}, Organisation={organisation}")
+            return user_id
+    except psycopg2.Error as e:
+        print(f"Fehler beim Erstellen des Benutzers: {e}")
         return None
     finally:
         close_connection(connection)
