@@ -6,11 +6,16 @@ from routes.ai import router as ai_router
 
 app = FastAPI()
 
+# CORS-Konfiguration hinzufügen
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # or ["*"] for all origins (development only!)
+    allow_origins=[
+        "http://192.168.178.146:3000",  # Ihr Frontend
+        "http://localhost:3000",        # Lokale Entwicklung
+        "https://zuma.stoyse.eu"  # Produktions-Frontend (anpassen)
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
