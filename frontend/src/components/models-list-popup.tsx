@@ -31,7 +31,7 @@ const ModelsListPopup: React.FC<ModelsListPopupProps> = ({ isOpen, onClose }) =>
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("http://localhost:9000/ai/models");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/ai/models`);
       if (!res.ok) throw new Error("Error loading models");
       const data = await res.json();
       setModels(data.models || []);
