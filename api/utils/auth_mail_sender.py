@@ -11,7 +11,7 @@ load_dotenv()
 # SMTP Email Sender
 def send_html_email(recipient_email, name, code, organisation):
     # Load the HTML template
-    with open('/Users/julianstosse/Developer/zuma/api/utils/html_email_template.html', 'r') as file:
+    with open('utils/html_email_template.html', 'r') as file:
         html_template = Template(file.read())
 
     # Substitute placeholders with actual data
