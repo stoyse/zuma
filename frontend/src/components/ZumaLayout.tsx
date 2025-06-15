@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
-import Script from "next/script"; // Ersetzt Head für externe Skripte
 
 type NavbarProps = {
   children: ReactNode;
@@ -14,29 +13,26 @@ export default function ZumaLayout({ children }: NavbarProps) {
   const [activePage, setActivePage] = useState<string>("dashboard");
   const [iconsLoaded, setIconsLoaded] = useState(false);
 
-  // Konstante für die Navbar-Höhe definieren
   const navbarHeight = "50px";
   const sidebarPaddingTop = "75px";
 
   useEffect(() => {
+    // Überprüfen, ob FontAwesome JS geladen ist (optional, wenn Fallback-Text gewünscht)
+    if (typeof window !== 'undefined' && (window as any).FontAwesome) {
+      setIconsLoaded(true);
+    }
+    // Diese Logik wird immer ausgeführt, da ZumaLayout nur auf Dashboard-Seiten verwendet wird
     setName(localStorage.getItem('zuma_name'));
     setOrganisation(localStorage.getItem('zuma_organisation'));
     
-    // Set active page based on URL
-    const path = window.location.pathname;
-    if (path.includes('dashboard')) setActivePage('dashboard');
-    else if (path.includes('agents')) setActivePage('agents');
-    else if (path.includes('tasks')) setActivePage('tasks');
-    else if (path.includes('training')) setActivePage('training');
-    else if (path.includes('analytics')) setActivePage('analytics');
-    else if (path.includes('settings')) setActivePage('settings');
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('/dashboard')) setActivePage('dashboard');
+    else if (currentPath.includes('/agents')) setActivePage('agents');
+    else if (currentPath.includes('/tasks')) setActivePage('tasks');
+    else if (currentPath.includes('/training')) setActivePage('training');
+    else if (currentPath.includes('/analytics')) setActivePage('analytics');
+    else if (currentPath.includes('/settings')) setActivePage('settings');
     
-    // Überprüfen, ob FontAwesome bereits geladen ist
-    if (typeof window !== 'undefined') {
-      if (document.querySelector('link[href*="fontawesome"]')) {
-        setIconsLoaded(true);
-      }
-    }
   }, []);
 
   // Sidebar styles
@@ -126,30 +122,23 @@ export default function ZumaLayout({ children }: NavbarProps) {
     marginBottom: "1rem"
   };
 
+  // Content Container Styles sind jetzt statisch für das Dashboard-Layout
   const contentContainerStyles = {
     marginLeft: "4rem",
-    minHeight: "100vh"
+    minHeight: "100vh",
+    paddingTop: navbarHeight // Immer Padding für die Dashboard-Navbar
   };
 
   return (
     <>
-      {/* FontAwesome einbinden mit next/script anstatt Head */}
-      <Script 
-        src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-        onLoad={() => setIconsLoaded(true)}
-        strategy="afterInteractive"
-      />
-      
-      {/* Fallback CSS für Icons, falls JS nicht lädt */}
-      <link 
-        rel="stylesheet" 
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-      />
+      {/* FontAwesome Script und Link werden aus RootLayout geladen */}
+      {/* <Script ... /> */}
+      {/* <link ... /> */}
 
-      {/* Background */}
-      <div className="bg-gradient"></div>
+      {/* Background Gradient wird aus RootLayout geladen */}
+      {/* <div className="bg-gradient"></div> */}
 
-      {/* Sidebar */}
+      {/* Sidebar (wird immer gerendert, wenn ZumaLayout verwendet wird) */}
       <nav style={sidebarStyles}>
         <div style={sidebarNavStyles}>
           <Link href="/" style={logoStyles}>Z</Link>
@@ -278,13 +267,13 @@ export default function ZumaLayout({ children }: NavbarProps) {
         </div>
       </nav>
 
-      {/* Navbar */}
-      <nav className="navbar">
+      {/* Dashboard-spezifische Navbar (wird immer gerendert) */}
+      <nav className="navbar"> {/* Diese Klasse bezieht sich auf die Dashboard-Navbar-Stile */}
         <div className="container" style={{ 
           display: "flex", 
           justifyContent: "space-between", 
           alignItems: "center",
-          height: navbarHeight // Navbar-Höhe explizit setzen
+          height: navbarHeight 
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <Link href="/" className="navbar-brand" style={{ fontWeight: 700, fontSize: 28, color: "#7289fc", letterSpacing: 2 }}>zuma</Link>
