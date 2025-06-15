@@ -3,29 +3,39 @@
 import Link from "next/link";
 import { useEffect } from "react";
 
-export default function PublicNavbar() {
+interface PublicNavbarProps {
+  transparent?: boolean;
+}
+
+export default function PublicNavbar({ transparent = false }: PublicNavbarProps) {
   useEffect(() => {
     const navbar = document.getElementById('public-navbar');
     if (!navbar) return;
 
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
+      if (transparent) {
+        // Für transparente Navbar, füge Hintergrund beim Scrollen hinzu
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
       } else {
-        navbar.classList.remove('scrolled');
+        // Für normale Navbar, Standard-Scroll-Verhalten
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [transparent]);
 
   return (
-    <nav className="navbar" id="public-navbar" style={{
-      background: "transparent",
-      backdropFilter: "none",
-      borderBottom: "none",
-      boxShadow: "none",
+    <nav className={`navbar ${transparent ? 'transparent' : ''}`} id="public-navbar" style={{
       padding: "1rem 2rem",
       position: "fixed",
       width: "100%",

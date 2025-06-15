@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent, useRef, useEffect } from 'react'; // useEffect hinzugefügt
+import { useState, FormEvent, useRef, useEffect, Suspense } from 'react'; // Suspense hinzugefügt
 import PublicNavbar from '@/components/PublicNavbar';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation'; // useSearchParams hinzugefügt
@@ -64,7 +64,8 @@ const plans = [
 
 // PaymentForm Komponente wird nicht mehr benötigt und kann entfernt werden.
 
-export default function CreateOrganisationPage() {
+// Hauptkomponente mit useSearchParams
+function CreateOrganisationContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [orgName, setOrgName] = useState('');
   const [email, setEmail] = useState('');
@@ -573,5 +574,29 @@ export default function CreateOrganisationPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+// Wrapper-Komponente mit Suspense
+export default function CreateOrganisationPage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        background: 'var(--dark-bg)'
+      }}>
+        <div style={{
+          color: 'var(--text-primary)',
+          fontSize: '1.2rem'
+        }}>
+          Loading...
+        </div>
+      </div>
+    }>
+      <CreateOrganisationContent />
+    </Suspense>
   );
 }
