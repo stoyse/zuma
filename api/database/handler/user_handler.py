@@ -51,6 +51,30 @@ def insert_connection(userid):
     finally:
         close_connection(connection)
 
+def check_user(email):
+    connection = connect_to_db()
+    if not connection:
+        print("Keine Datenbankverbindung möglich.")
+        return None
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT userid, name, organisation FROM users WHERE email = %s;",
+                (email,)
+            )
+            result = cursor.fetchone()
+            if result:
+                print(f"Benutzer gefunden: ID={result[0]}, Name={result[1]}, Organisation={result[2]}")
+                return result[1], result[0], result[2]  # (name, id, organisation)
+            else:
+                print("Kein Benutzer mit dieser E-Mail gefunden.")
+                return None
+    except psycopg2.Error as e:
+        print(f"Fehler beim Überprüfen des Benutzers: {e}")
+        return None
+    finally:
+        close_connection(connection)
+
 # Example usage
 if __name__ == "__main__":
     conn = connect_to_db()
