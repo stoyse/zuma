@@ -1,0 +1,2 @@
+journalctl -u zuma-api.service -b -n 50
+sudo systemctl restart zuma.service
