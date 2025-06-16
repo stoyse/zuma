@@ -1,0 +1,19 @@
+[Unit]
+Description=Zuma Application and Cloudflare Tunnel
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/starcom/zuma/frontend/start-zuma.sh
+WorkingDirectory=/home/starcom/zuma/frontend
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=5
+User=starcom
+Environment="PATH=/home/starcom/zuma/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

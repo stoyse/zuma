@@ -60,7 +60,7 @@ def check_user(email):
     try:
         with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT userid, name, organisation FROM users WHERE email = %s;",
+                "SELECT userid, name, organisation_slug FROM users WHERE email = %s;",
                 (email,)
             )
             result = cursor.fetchone()
@@ -76,7 +76,7 @@ def check_user(email):
     finally:
         close_connection(connection)
 
-def createUser(email, name, organisation):
+def createUser(email, name, organisation_slug):
     """
     Erstellt einen neuen Benutzer in der Datenbank.
     :param email: E-Mail des Benutzers (str)
@@ -84,15 +84,15 @@ def createUser(email, name, organisation):
     :param organisation: Organisation des Benutzers (str)
     """
     connection = connect_to_db()
-    user_id = generate_userid(organisation)  # Generiere eine eindeutige Benutzer-ID
+    user_id = generate_userid(organisation_slug)  # Generiere eine eindeutige Benutzer-ID
     if not connection:
         print("Keine Datenbankverbindung möglich.")
         return None
     try:
         with connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO users (userid, email, name, organisation) VALUES (%s, %s, %s, %s) RETURNING userid;",
-                (user_id, email, name, organisation)
+                "INSERT INTO users (userid, email, name, organisation_slug) VALUES (%s, %s, %s, %s) RETURNING userid;",
+                (user_id, email, name, organisation_slug)
             )
             user_id_tuple = cursor.fetchone() # Sicherstellen, dass wir das Ergebnis korrekt abrufen
             if user_id_tuple:
@@ -105,11 +105,39 @@ def createUser(email, name, organisation):
                 return None
             
             connection.commit()
-            print(f"Benutzer erstellt: ID={user_id}, Name={name}, Organisation={organisation}")
+            print(f"Benutzer erstellt: ID={user_id}, Name={name}, organisation_slug={organisation_slug}")
             return user_id
     except psycopg2.Error as e:
         print(f"Fehler beim Erstellen des Benutzers: {e}")
         return None
+    finally:
+        close_connection(connection)
+
+def delete_user(userid):
+    """
+    Löscht einen Benutzer aus der Datenbank basierend auf seiner Benutzer-ID.
+    :param userid: Die ID des Benutzers (int)
+    """
+    connection = connect_to_db()
+    if not connection:
+        print("Keine Datenbankverbindung möglich.")
+        return False
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM users WHERE userid = %s;",
+                (userid,)
+            )
+            if cursor.rowcount > 0:
+                connection.commit()
+                print(f"Benutzer mit ID={userid} erfolgreich gelöscht.")
+                return True
+            else:
+                print(f"Kein Benutzer mit ID={userid} gefunden.")
+                return False
+    except psycopg2.Error as e:
+        print(f"Fehler beim Löschen des Benutzers: {e}")
+        return False
     finally:
         close_connection(connection)
 

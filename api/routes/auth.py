@@ -8,6 +8,7 @@ import database.handler.enterprise_lead_handler as enterprise_lead_handler # Hin
 import utils.generate_sso as generate_sso
 import utils.auth_mail_sender as auth_mail_sender
 
+
 router = APIRouter()
 
 @router.get("/health")
@@ -25,7 +26,9 @@ def login_user(data: dict):
             token = generate_sso.generate_token()
             name = user_check[0]
             userid = user_check[1]
-            organisation = user_check[2]
+            organisation_slug = user_check[2]
+            organisation_data = organisation_handler.get_organisation_by_slug(organisation_slug)
+            organisation = organisation_data.get("organisation", {}).get("name") if organisation_data.get("status") == "success" else None
             auth_mail_sender.send_html_email(
                 recipient_email=email,
                 name=name,

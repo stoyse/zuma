@@ -1,0 +1,27 @@
+{
+    "agent_894308129084921834": {
+        "agent_name": "Agent 894308129084921834",
+        "agent_description": "This agent is designed to assist with various tasks related to the company.",
+        "start": {
+            "type": "read_email",
+            "parameters": {
+                "email_mailbox": "agent@blabla.com",
+                "idk": false
+            }
+        },
+
+        "step_1": {
+            "type": "read_email",
+            "parameters": {
+                "email_mailbox": "agent@blabla.com",
+                "idk": false
+            }
+        },
+        "step_x": {
+            "type": "read_email",
+            "parameters": {
+                "email_mailbox": "mfiowenfif"
+            }
+        }
+    }
+}

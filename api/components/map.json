@@ -1,0 +1,66 @@
+{
+    "AI": {
+        "1": {
+            "agent_name": "AI Agent 1",
+            "agent_description": "This agent is designed to assist with various tasks related to the company.",
+            "start": {
+                "type": "read_email",
+                "parameters": {
+                    "email_mailbox": ""
+                }
+            }
+        },
+        "2": {
+            "agent_name": "AI Agent 2",
+            "agent_description": "This agent is designed to assist with various tasks related to the company.",
+            "start": {
+                "type": "read_email",
+                "parameters": {
+                    "email_mailbox": ""
+                }
+            }
+        },
+        "3": {
+            "agent_name": "AI Agent 3",
+            "agent_description": "This agent is designed to assist with various tasks related to the company.",
+            "start": {
+                "type": "read_email",
+                "parameters": {
+                    "email_mailbox": ""
+                }
+            }
+        }
+    },
+    "apis": {
+        "1": {
+            "agent_name": "API Agent 1",
+            "agent_description": "This agent is designed to assist with various tasks related to the company.",
+            "start": {
+                "type": "read_email",
+                "parameters": {
+                    "email_mailbox": ""
+                }
+            }
+        },
+        "2": {
+            "agent_name": "API Agent 2",
+            "agent_description": "This agent is designed to assist with various tasks related to the company.",
+            "start": {
+                "type": "read_email",
+                "parameters": {
+                    "email_mailbox": ""
+                }
+            }
+        },
+        "3": {
+            "agent_name": "API Agent 3",
+            "agent_description": "This agent is designed to assist with various tasks related to the company.",
+            "start": {
+                "type": "read_email",
+                "parameters": {
+                    "email_mailbox": ""
+                }
+            }
+        }
+    }
+}

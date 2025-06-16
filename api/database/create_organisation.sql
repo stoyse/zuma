@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS organisation (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    name_slug VARCHAR(255) UNIQUE NOT NULL,
+    organisation_slug VARCHAR(255) UNIQUE NOT NULL,
     phone VARCHAR(20),
     address TEXT,
     website VARCHAR(255),
